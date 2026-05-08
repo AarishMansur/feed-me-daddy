@@ -14,8 +14,8 @@ app.get("/",(_,res)=>{
      res.status(200).json({message:"Hello this server is running fine"})
 })
 
-app.use("/api",FeedRoute)
 app.all("/api/auth/**",toNodeHandler(auth))
+app.use("/api/youtube",FeedRoute)
 
 app.listen(PORT,()=>{
     console.log(`Hello this port is running fine on ${PORT}`);
