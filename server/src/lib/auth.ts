@@ -15,7 +15,9 @@ export const auth = betterAuth({
                 "openid",
               "email",
             "profile",
-            "https://www.googleapis.com/auth/youtube.readonly"]
+            "https://www.googleapis.com/auth/youtube.readonly"],
+            accessType:'offline',
+            prompt:"consent"
         },
     },
     
