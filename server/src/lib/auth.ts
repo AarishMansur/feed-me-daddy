@@ -20,6 +20,7 @@ export const auth = betterAuth({
             prompt:"consent"
         },
     },
+    trustedOrigins:[process.env.FRONTEND_URL as string]
     
 });
 
