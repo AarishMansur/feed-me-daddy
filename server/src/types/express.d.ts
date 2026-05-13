@@ -3,7 +3,10 @@
 declare global{
     namespace Express{
         interface Request{
-            session?:any
+            session?:any,
+            googleAccount?:any
         }
     }
 }
+
+export {};

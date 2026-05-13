@@ -20,3 +20,15 @@ export const getSubscription = async(accessToken:string)=>{
     )
       return response.json()
 }
+
+export const getPlayList = async(accessToken:string)=>{
+    const data = await fetch(`https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=20`,
+
+        {
+            headers:{
+                Authorization :`Bearer ${accessToken}`
+            }
+        }
+    )
+    return data.json();
+}
