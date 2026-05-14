@@ -1,0 +1,421 @@
+
+{
+  "interestMap": {
+    "coding": [
+      "react",
+      "nextjs",
+      "node",
+      "express",
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "coding",
+      "developer",
+      "open source",
+      "programming",
+      "web development",
+      "backend",
+      "frontend",
+      "full stack",
+      "software engineering",
+      "api",
+      "database"
+    ],
+
+    "ai_ml": [
+      "artificial intelligence",
+      "machine learning",
+      "deep learning",
+      "llm",
+      "gpt",
+      "neural network",
+      "data science",
+      "ai",
+      "chatgpt",
+      "automation",
+      "computer vision",
+      "nlp"
+    ],
+
+    "cybersecurity": [
+      "hacking",
+      "ethical hacking",
+      "bug bounty",
+      "penetration testing",
+      "malware",
+      "cybersecurity",
+      "linux",
+      "network security",
+      "ctf"
+    ],
+
+    "design": [
+      "design",
+      "ui",
+      "ux",
+      "figma",
+      "animation",
+      "branding",
+      "motion graphics",
+      "graphic design",
+      "typography",
+      "color theory"
+    ],
+
+    "productivity": [
+      "productivity",
+      "deep work",
+      "focus",
+      "time management",
+      "habit",
+      "discipline",
+      "routine",
+      "self improvement",
+      "study",
+      "motivation"
+    ],
+
+    "psychology": [
+      "mind",
+      "psychology",
+      "human behavior",
+      "mental health",
+      "cognitive bias",
+      "brain",
+      "personality",
+      "therapy",
+      "social skills"
+    ],
+
+    "philosophy": [
+      "stoicism",
+      "philosophy",
+      "nietzsche",
+      "existentialism",
+      "meaning",
+      "life",
+      "ethics",
+      "wisdom",
+      "consciousness"
+    ],
+
+    "business": [
+      "startup",
+      "business",
+      "entrepreneurship",
+      "marketing",
+      "sales",
+      "money",
+      "finance",
+      "investing",
+      "saas",
+      "founder"
+    ],
+
+    "economics": [
+      "economics",
+      "inflation",
+      "capitalism",
+      "market",
+      "economy",
+      "stocks",
+      "recession",
+      "trade"
+    ],
+
+    "history": [
+      "history",
+      "world war",
+      "ancient civilization",
+      "roman empire",
+      "medieval",
+      "historical documentary",
+      "empire",
+      "cold war"
+    ],
+
+    "politics": [
+      "politics",
+      "government",
+      "election",
+      "policy",
+      "democracy",
+      "geopolitics",
+      "debate",
+      "news"
+    ],
+
+    "science": [
+      "science",
+      "physics",
+      "chemistry",
+      "biology",
+      "space",
+      "astronomy",
+      "quantum",
+      "research"
+    ],
+
+    "math": [
+      "math",
+      "algebra",
+      "calculus",
+      "geometry",
+      "statistics",
+      "probability",
+      "equation"
+    ],
+
+    "space": [
+      "space",
+      "nasa",
+      "spacex",
+      "mars",
+      "rocket",
+      "universe",
+      "black hole",
+      "astronomy"
+    ],
+
+    "fitness": [
+      "fitness",
+      "gym",
+      "workout",
+      "bodybuilding",
+      "calisthenics",
+      "muscle",
+      "strength",
+      "cardio"
+    ],
+
+    "martial_arts": [
+      "mma",
+      "boxing",
+      "ufc",
+      "karate",
+      "judo",
+      "muay thai",
+      "martial arts",
+      "fight"
+    ],
+
+    "sports": [
+      "football",
+      "soccer",
+      "basketball",
+      "cricket",
+      "tennis",
+      "sports highlights",
+      "fifa",
+      "nba"
+    ],
+
+    "nutrition": [
+      "nutrition",
+      "diet",
+      "protein",
+      "healthy eating",
+      "meal prep",
+      "weight loss",
+      "bulking"
+    ],
+
+    "cooking": [
+      "cooking",
+      "recipe",
+      "chef",
+      "food",
+      "baking",
+      "kitchen",
+      "street food"
+    ],
+
+    "travel": [
+      "travel",
+      "vlog",
+      "backpacking",
+      "country",
+      "adventure",
+      "tourism",
+      "van life"
+    ],
+
+    "cars": [
+      "cars",
+      "supercars",
+      "formula 1",
+      "engine",
+      "automobile",
+      "tesla",
+      "car review"
+    ],
+
+    "motorcycles": [
+      "motorcycle",
+      "bike",
+      "motovlog",
+      "racing",
+      "sports bike"
+    ],
+
+    "gaming": [
+      "gaming",
+      "minecraft",
+      "valorant",
+      "fortnite",
+      "gta",
+      "esports",
+      "stream",
+      "walkthrough"
+    ],
+
+    "anime": [
+      "anime",
+      "manga",
+      "naruto",
+      "one piece",
+      "attack on titan",
+      "anime edit"
+    ],
+
+    "movies": [
+      "movie",
+      "cinema",
+      "film analysis",
+      "hollywood",
+      "director",
+      "screenplay",
+      "movie review"
+    ],
+
+    "storytelling": [
+      "storytelling",
+      "writing",
+      "fiction",
+      "novel",
+      "screenwriting",
+      "narrative",
+      "character"
+    ],
+
+    "music": [
+      "music",
+      "song",
+      "album",
+      "guitar",
+      "piano",
+      "singing",
+      "music theory",
+      "producer"
+    ],
+
+    "photography": [
+      "photography",
+      "camera",
+      "portrait",
+      "lens",
+      "editing",
+      "lightroom"
+    ],
+
+    "filmmaking": [
+      "filmmaking",
+      "cinematography",
+      "editing",
+      "short film",
+      "camera movement",
+      "b roll",
+      "davinci resolve"
+    ],
+
+    "fashion": [
+      "fashion",
+      "streetwear",
+      "style",
+      "outfit",
+      "clothing",
+      "aesthetic"
+    ],
+
+    "beauty": [
+      "makeup",
+      "skincare",
+      "beauty",
+      "cosmetics",
+      "haircare"
+    ],
+
+    "education": [
+      "education",
+      "learning",
+      "study tips",
+      "online course",
+      "school",
+      "college"
+    ],
+
+    "language_learning": [
+      "language learning",
+      "english",
+      "german",
+      "japanese",
+      "fluency",
+      "pronunciation"
+    ],
+
+    "finance": [
+      "finance",
+      "investing",
+      "crypto",
+      "bitcoin",
+      "stock market",
+      "wealth",
+      "passive income"
+    ],
+
+    "real_estate": [
+      "real estate",
+      "property",
+      "housing",
+      "rent",
+      "architecture"
+    ],
+
+    "nature": [
+      "nature",
+      "wildlife",
+      "forest",
+      "animals",
+      "documentary",
+      "earth"
+    ],
+
+    "spirituality": [
+      "meditation",
+      "spirituality",
+      "mindfulness",
+      "yoga",
+      "inner peace"
+    ],
+
+    "memes": [
+      "meme",
+      "funny",
+      "shitpost",
+      "comedy",
+      "humor"
+    ],
+
+    "podcasts": [
+      "podcast",
+      "long form",
+      "conversation",
+      "interview",
+      "discussion"
+    ]
+  }
+}
+
+
