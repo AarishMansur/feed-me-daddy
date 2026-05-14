@@ -1,45 +1,60 @@
-import type { Request,Response } from "express";
-import { getGoogleAccount,getPlayList,getSubscription } from "./Feed.service.js";
+import type { Request, Response } from "express";
+import { getGoogleAccount, getLikedVideos, getPlayList, getSubscription } from "./Feed.service.js";
 
+export const SubscriptionController = async (req: Request, res: Response) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
+    const account = req.googleAccount ?? await getGoogleAccount(userId);
 
-export const SubscriptionController  = async(req:Request,res:Response)=>{
-    try {
-        const userId = req.session?.user?.id;
-        const account = req.googleAccount ?? await getGoogleAccount(userId);
-
-          if (!account) {
+    if (!account) {
       return res.status(404).json({
         message: "Google account not found",
       });
     }
 
-    const data = await getSubscription(account.accessToken!); // just a workaround a better solution would be to update schame to accept null values too 
-    return res.json(data)
-    } catch (error) {
-        return res.status(500).json({
+    const data = await getSubscription(account);
+    return res.json(data);
+  } catch (error) {
+    return res.status(500).json({
       message: "Internal server error",
       error,
     });
+  }
+};
+
+export const PlaylistController = async (req: Request, res: Response) => {
+  try {
+    const account = req.googleAccount;
+
+    if (!account) {
+      return res.status(404).json({
+        message: "Google account not found",
+      });
     }
-}
 
-export const PlaylistController  = async(req:Request,res:Response)=>{
-    try {
-        const account = req.googleAccount;
+    const data = await getPlayList(account);
+    return res.json(data);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error",
+      error,
+    });
+  }
+};
 
-        if (!account) {
-            return res.status(404).json({
-                message: "Google account not found",
-            });
-        }
-
-        const data = await getPlayList(account.accessToken!);
-        return res.json(data);
-    } catch (error) {
-        return res.status(500).json({
-            message: "Internal server error",
-            error,
-        });
+export const playlistItemsController = async (req: Request, res: Response) => {
+  try {
+    const googleaccount = req.googleAccount;
+    if (!googleaccount) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-}
+    const data = await getLikedVideos(googleaccount);
+    return res.json(data);
+  } catch (error) {
+    return res.status(404).json({ message: "Liked Videos could not be found", error });
+  }
+};
