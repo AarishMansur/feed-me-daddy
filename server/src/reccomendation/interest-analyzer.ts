@@ -12,6 +12,10 @@ type Subscription = {
   }
 }
 
+interface Like extends Video  {
+  liked:boolean,
+}
+
 type InterestProfile =  Record<string,number>;
 
 const STOP_WORDS = new Set([
@@ -58,8 +62,8 @@ export const analyzeVideoInterests = (video: Video): Record<string, string[]> =>
 };
 
 export const analyzeSubscriptionInterests = (
-  subscription: Subscription
-): Record<string, string[]> => {
+  subscription: Subscription): Record<string, string[]> => {
+    
   const text = `${subscription.snippet?.title || ""} ${
     subscription.snippet?.description || ""
   }`;
@@ -68,10 +72,7 @@ export const analyzeSubscriptionInterests = (
 };
 
 
-export const buildInterestProfile = (
-  videos: Video[],
-  subscriptions: Subscription[]
-): InterestProfile => {
+export const buildInterestProfile = ( videos: Video[], subscriptions: Subscription[], Likes:Like[]): InterestProfile => {
   const scores: InterestProfile = {};
   const interestMap = interestData.interestMap as Record<string, string[]>;
 
@@ -95,6 +96,13 @@ export const buildInterestProfile = (
     }
   }
 
+  for (const like of Likes) {
+  const matches = analyzeVideoInterests(like);
+
+  for (const [category, matchedKeywords] of Object.entries(matches)) {
+    scores[category]! += matchedKeywords.length * 1.5;
+  }
+}
  
   const maxScore = Math.max(...Object.values(scores));
   if (maxScore > 0) {
