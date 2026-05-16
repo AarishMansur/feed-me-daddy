@@ -4,6 +4,7 @@ import FeedRoute from './Feed/feed.route.js'
 import { toNodeHandler } from "better-auth/node"
 import { auth } from "./lib/auth.js"
 import cors from "cors"
+import reccomedationRoute from "./reccomendation/reccomendation.route.js"
 
 const PORT = process.env.PORT_NUMBER || 5000
 
@@ -25,6 +26,8 @@ app.get("/",(_,res)=>{
 
 
 app.use("/api/youtube",FeedRoute)
+app.use("/api/reccomendation",reccomedationRoute)
+app.use("/api/recommendation",reccomedationRoute)
 
 app.listen(PORT,()=>{
     console.log(`Hello this port is running fine on ${PORT}`);

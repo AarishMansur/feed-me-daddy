@@ -1,6 +1,6 @@
-import { buildInterestProfile,analyzeVideoInterests } from "./interest-analyzer.js";
+import { analyzeVideoInterests } from "./interest-analyzer.js";
 
-type Videeo = {
+export type Video = {
     id?:string
     title?:string
     description?:string
@@ -8,20 +8,18 @@ type Videeo = {
     link?:string
 }
 
-
-
 type InterestProfile = Record<string, number>;
 
-type Reccomendation = {
+export type Recommendation = {
     videoID:string
     videoLink:string
     thumbnail:string
     category:string
     score:number
-    matchkeywoard:string[];
+    matchedKeywords:string[];
 }
 
-export const scoreVideo = (video:Videeo,interestProfile:InterestProfile):{score:number;category:string;keywords:string[]}=>{
+export const scoreVideo = (video:Video,interestProfile:InterestProfile):{score:number;category:string;keywords:string[]}=>{
     const matches = analyzeVideoInterests(video);
   
     let totalScore = 0;
@@ -50,18 +48,18 @@ export const scoreVideo = (video:Videeo,interestProfile:InterestProfile):{score:
 }
 
 
-export const generateRecommendations = (videos:Videeo[],likedVideosID:Set<string>,interestProfile:InterestProfile,maxResults:number = 10):Reccomendation[]=>{
+export const generateRecommendations = (videos:Video[],likedVideosID:Set<string>,interestProfile:InterestProfile,maxResults:number = 10):Recommendation[]=>{
     const candidates = videos.filter(v=>!likedVideosID.has(v.id || ""));
     const scored = candidates.map(video=>({video,...scoreVideo(video,interestProfile),}))
    scored.sort((a,b)=>b.score-a.score);
 
-    const reccomendations: Reccomendation[] = scored.slice(0, maxResults).map(item => ({
+    const reccomendations: Recommendation[] = scored.slice(0, maxResults).map(item => ({
     videoID: item.video.id || "",
     videoLink: item.video.link || "",
     thumbnail: item.video.thumbnail || "",
     category: item.category,
     score: item.score,
-    matchkeywoard: item.keywords,
+    matchedKeywords: item.keywords,
   }));
 
   return  reccomendations;
@@ -69,8 +67,8 @@ export const generateRecommendations = (videos:Videeo[],likedVideosID:Set<string
 
 
 export const deduplicateRecommendations = (
-  recommendations: Reccomendation[]
-): Reccomendation[] => {
+  recommendations: Recommendation[]
+): Recommendation[] => {
   const seen = new Set<string>();
   return recommendations.filter(rec => {
     if (seen.has(rec.videoID)) {

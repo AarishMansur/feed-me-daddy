@@ -60,7 +60,7 @@ const refreshGoogleAccessToken = async (account: Account) => {
   });
 };
 
-const makeYouTubeRequest = async (account: Account, url: string) => {
+export const makeYouTubeRequest = async (account: Account, url: string) => {
   if (!account.accessToken) {
     throw new Error("Missing Google access token");
   }
@@ -111,4 +111,19 @@ export const getLikedVideos = async (account: Account) => {
     account,
     `${YOUTUBE_API_BASE}/playlistItems?part=snippet&playlistId=LL&maxResults=20`,
   );
+};
+
+export const searchYouTubeVideos = async (
+  account: Account,
+  query: string,
+  maxResults: number = 10,
+) => {
+  const params = new URLSearchParams({
+    part: "snippet",
+    type: "video",
+    q: query,
+    maxResults: String(maxResults),
+  });
+
+  return makeYouTubeRequest(account, `${YOUTUBE_API_BASE}/search?${params.toString()}`);
 };
