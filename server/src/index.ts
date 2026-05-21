@@ -10,6 +10,8 @@ const PORT = process.env.PORT_NUMBER || 5000
 
 const app = express();
 
+ app.use(express.json())
+
 app.use(cors({
     origin:process.env.FRONTEND_URL ,
     credentials:true,
@@ -18,7 +20,7 @@ app.use(cors({
 app.all("/api/auth/*splat",toNodeHandler(auth))
 
 
- app.use(express.json())
+
 
 app.get("/",(_,res)=>{
      res.status(200).json({message:"Hello this server is running fine"})
@@ -27,7 +29,6 @@ app.get("/",(_,res)=>{
 
 app.use("/api/youtube",FeedRoute)
 app.use("/api/reccomendation",reccomedationRoute)
-app.use("/api/recommendation",reccomedationRoute)
 
 app.listen(PORT,()=>{
     console.log(`Hello this port is running fine on ${PORT}`);
