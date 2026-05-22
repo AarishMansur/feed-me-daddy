@@ -14,7 +14,7 @@ export default function GoogleSignInButton({
   const handleSignIn = () => {
     authClient.signIn.social({
       provider: "google",
-      callbackURL,
+      callbackURL: `${window.location.origin}${callbackURL}`,
     });
   };
 
