@@ -132,7 +132,7 @@ export const saveRecommendations = async (
   await prisma.reccomendation.createMany({
     data: recommendations.map((rec) => ({
         userId,
-        videoID: rec.videoID,
+        videoid: rec.videoID,
         videoLink: rec.videoLink,
         thumbnail: rec.thumbnail,
         title: rec.title,

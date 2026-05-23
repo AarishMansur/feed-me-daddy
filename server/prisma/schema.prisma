@@ -27,7 +27,7 @@ model User {
 model Reccomendation {
   id        String   @id @default(uuid())
   userId    String
-  videoID   String
+  videoId   String  @map("videoID")
   videoLink String
   thumbnail String
   title     String?
