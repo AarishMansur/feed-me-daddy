@@ -48,7 +48,9 @@ export default function Dashboard() {
     await refetchRecommendations();
   };
 
-  const recommendations = recommendationsData || [];
+  const recommendations = Array.isArray(recommendationsData) 
+    ? recommendationsData 
+    : (recommendationsData as any)?.recommendations || [];
   const subscriptions = subscriptionsData || [];
   const likedVideos = likedVideosData || [];
 
