@@ -32,6 +32,7 @@ export const refreshRecommendationsController = async(req:Request,res:Response)=
         return res.json({ message: "Recommendations refreshed", recommendations });
 
     } catch (error) {
-         return res.status(500).json({ message: "Internal server error", error });
+        console.error("Recommendation refresh error:", error);
+        return res.status(500).json({ message: "Internal server error", error: error instanceof Error ? error.message : String(error) });
     }
 }

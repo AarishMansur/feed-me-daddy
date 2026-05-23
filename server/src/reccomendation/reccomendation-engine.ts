@@ -14,6 +14,7 @@ export type Recommendation = {
     videoID:string
     videoLink:string
     thumbnail:string
+    title: string | undefined
     category:string
     score:number
     matchedKeywords:string[];
@@ -57,6 +58,7 @@ export const generateRecommendations = (videos:Video[],likedVideosID:Set<string>
     videoID: item.video.id || "",
     videoLink: item.video.link || "",
     thumbnail: item.video.thumbnail || "",
+    title: item.video.title,
     category: item.category,
     score: item.score,
     matchedKeywords: item.keywords,

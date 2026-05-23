@@ -135,6 +135,7 @@ export const saveRecommendations = async (
         videoID: rec.videoID,
         videoLink: rec.videoLink,
         thumbnail: rec.thumbnail,
+        title: rec.title,
         category: rec.category,
     })),
   });
