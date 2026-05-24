@@ -1,7 +1,12 @@
 import { prisma } from "../lib/prisma.js";
 import type { Account } from "../../generated/prisma/client.js";
 import { getLikedVideos, getSubscription, searchYouTubeVideos } from "../Feed/Feed.service.js";
-import { buildInterestProfile } from "./interest-analyzer.js";
+import {
+  analyzeVideoInterests,
+  buildInterestProfile,
+  getInterestCategories,
+  getInterestKeywords,
+} from "./interest-analyzer.js";
 import {
   deduplicateRecommendations,
   generateRecommendations,
@@ -95,14 +100,87 @@ const normalizeSubscriptions = (response: YouTubeListResponse<Subscription>): Su
   return response.items || [];
 };
 
-const getTopInterestQueries = (interestProfile: Record<string, number>, maxQueries: number): string[] => {
-  const queries = Object.entries(interestProfile)
+const DISCOVERY_QUERY_MODIFIERS = [
+  "explained",
+  "documentary",
+  "beginner guide",
+  "deep dive",
+  "case study",
+  "why it matters",
+];
+
+const shuffle = <T>(items: T[]): T[] => {
+  return [...items].sort(() => Math.random() - 0.5);
+};
+
+const categoryToQuery = (category: string): string => {
+  return category.replace(/_/g, " ");
+};
+
+const getTopInterestCategories = (interestProfile: Record<string, number>, maxCategories: number): string[] => {
+  return Object.entries(interestProfile)
     .filter(([, score]) => score > 0)
     .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
-    .slice(0, maxQueries)
-    .map(([category]) => category.replace(/_/g, " "));
+    .slice(0, maxCategories)
+    .map(([category]) => category);
+};
+
+const getTopInterestQueries = (interestProfile: Record<string, number>, maxQueries: number): string[] => {
+  const queries = getTopInterestCategories(interestProfile, maxQueries)
+    .map(categoryToQuery);
 
   return queries.length > 0 ? queries : ["popular videos"];
+};
+
+const getDiscoveryCategories = (
+  interestProfile: Record<string, number>,
+  maxCategories: number,
+): string[] => {
+  const topCategories = getTopInterestCategories(interestProfile, 3);
+  const topCategorySet = new Set(topCategories);
+  const candidates = getInterestCategories()
+    .filter((category) => !topCategorySet.has(category));
+
+  return shuffle(candidates).slice(0, maxCategories);
+};
+
+const getDiscoveryQueries = (
+  categories: string[],
+): string[] => {
+  const queries = categories.map((category) => {
+    const keywords = getInterestKeywords(category);
+    const baseQuery = keywords[Math.floor(Math.random() * keywords.length)] || categoryToQuery(category);
+    const modifier = DISCOVERY_QUERY_MODIFIERS[Math.floor(Math.random() * DISCOVERY_QUERY_MODIFIERS.length)];
+    return `${baseQuery} ${modifier}`;
+  });
+
+  return queries.length > 0 ? queries : ["interesting documentaries"];
+};
+
+const buildExplorationProfile = (
+  baseProfile: Record<string, number>,
+  discoveryCategories: string[],
+  blockedCategories: Set<string>,
+): Record<string, number> => {
+  const profile = Object.fromEntries(Object.keys(baseProfile).map((category) => [category, 0]));
+
+  for (const category of discoveryCategories) {
+    if (category in profile && !blockedCategories.has(category)) {
+      profile[category] = 1;
+    }
+  }
+
+  return profile;
+};
+
+const removeTopInterestVideos = (
+  videos: Video[],
+  blockedCategories: Set<string>,
+): Video[] => {
+  return videos.filter((video) => {
+    const matches = analyzeVideoInterests(video);
+    return !Object.keys(matches).some((category) => blockedCategories.has(category));
+  });
 };
 
 export const getUserInterestProfile = async (account: Account) => {
@@ -121,21 +199,21 @@ export const saveRecommendations = async (
   userId: string,
   recommendations: Recommendation[]
 ): Promise<void> => {
-  await prisma.reccomendation.deleteMany({
-    where: { userId },
-  });
-
   if (recommendations.length === 0) {
     return;
   }
 
+  await prisma.reccomendation.deleteMany({
+    where: { userId },
+  });
+
   await prisma.reccomendation.createMany({
     data: recommendations.map((rec) => ({
         userId,
-        videoid: rec.videoID,
+        videoId: rec.videoID,
         videoLink: rec.videoLink,
         thumbnail: rec.thumbnail,
-        title: rec.title,
+        title: rec.title ?? null,
         category: rec.category,
     })),
   });
@@ -162,19 +240,39 @@ export const refreshUserRecommendations = async (
   const likedVideos = normalizeLikedVideos(likedVideosResponse);
   const subscriptions = normalizeSubscriptions(subscriptionsResponse);
   const interestProfile = buildInterestProfile(likedVideos, subscriptions);
-  const likedVideoIds = new Set(likedVideos.map(v => v.id || ""));
-  const queries = getTopInterestQueries(interestProfile, 3);
-  const searchResponses = await Promise.all(
-    queries.map((query) => searchYouTubeVideos(account, query, Math.ceil(maxResults / queries.length) + 5) as Promise<YouTubeListResponse<YouTubeSearchItem>>)
-  );
-  const candidateVideos = searchResponses.flatMap(normalizeSearchVideos);
+  const previousRecommendations = await getUserRecommendations(userId, maxResults);
+  const blockedVideoIds = new Set([
+    ...likedVideos.map((video) => video.id || ""),
+    ...previousRecommendations.map((recommendation) => recommendation.videoId),
+  ]);
+  const blockedCategories = new Set(getTopInterestCategories(interestProfile, 3));
 
-  const recommendations = deduplicateRecommendations(generateRecommendations(
-    candidateVideos,
-    likedVideoIds,
-    interestProfile,
-    maxResults
-  )).slice(0, maxResults);
+  const discoveryLimit = maxResults;
+  const discoveryCategories = getDiscoveryCategories(interestProfile, 6);
+  const discoveryQueries = getDiscoveryQueries(discoveryCategories);
+  const explorationProfile = buildExplorationProfile(interestProfile, discoveryCategories, blockedCategories);
+
+  const discoverySearchResponses = await Promise.all(
+    discoveryQueries.map((query) => searchYouTubeVideos(
+      account,
+      query,
+      Math.ceil(discoveryLimit / discoveryQueries.length) + 8,
+    ) as Promise<YouTubeListResponse<YouTubeSearchItem>>)
+  );
+  const discoveryVideos = removeTopInterestVideos(
+    discoverySearchResponses.flatMap(normalizeSearchVideos),
+    blockedCategories,
+  );
+  const discoveryRecommendations = generateRecommendations(
+    discoveryVideos,
+    blockedVideoIds,
+    explorationProfile,
+    discoveryLimit
+  );
+
+  const recommendations = deduplicateRecommendations([
+    ...discoveryRecommendations,
+  ]).slice(0, maxResults);
 
   await saveRecommendations(userId, recommendations);
 

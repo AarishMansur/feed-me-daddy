@@ -13,6 +13,7 @@ type Subscription = {
 }
 
 type InterestProfile =  Record<string,number>;
+const interestMap = interestData.interestMap as Record<string, string[]>;
 
 const STOP_WORDS = new Set([
   "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
@@ -33,7 +34,6 @@ export const extractKeywords = (text:string): string[]=>{
 
 export const matchKeywordsToCategories = ( keywords: string[]): Record<string, string[]> => {
   const matches: Record<string, string[]> = {};
-  const interestMap = interestData.interestMap as Record<string, string[]>;
 
   for (const [category, categoryKeywords] of Object.entries(interestMap)) {
     const matched = keywords.filter(keyword =>
@@ -57,6 +57,14 @@ export const analyzeVideoInterests = (video: Video): Record<string, string[]> =>
   return matchKeywordsToCategories(keywords);
 };
 
+export const getInterestCategories = (): string[] => {
+  return Object.keys(interestMap);
+};
+
+export const getInterestKeywords = (category: string): string[] => {
+  return interestMap[category] || [];
+};
+
 export const analyzeSubscriptionInterests = (
   subscription: Subscription): Record<string, string[]> => {
     
@@ -70,8 +78,6 @@ export const analyzeSubscriptionInterests = (
 
 export const buildInterestProfile = (videos: Video[], subscriptions: Subscription[]): InterestProfile => {
   const scores: InterestProfile = {};
-  const interestMap = interestData.interestMap as Record<string, string[]>;
-
 
   for (const category of Object.keys(interestMap)) {
     scores[category] = 0;
