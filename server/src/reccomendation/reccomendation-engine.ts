@@ -3,6 +3,7 @@ import { analyzeVideoInterests } from "./interest-analyzer.js";
 export type Video = {
     id?:string
     title?:string
+    channelTitle?:string
     description?:string
     thumbnail?:string
     link?:string
@@ -15,6 +16,7 @@ export type Recommendation = {
     videoLink:string
     thumbnail:string
     title: string | undefined
+    channelTitle?: string
     category:string
     score:number
     matchedKeywords:string[];
@@ -59,6 +61,7 @@ export const generateRecommendations = (videos:Video[],likedVideosID:Set<string>
     videoLink: item.video.link || "",
     thumbnail: item.video.thumbnail || "",
     title: item.video.title,
+    channelTitle: item.video.channelTitle,
     category: item.category,
     score: item.score,
     matchedKeywords: item.keywords,

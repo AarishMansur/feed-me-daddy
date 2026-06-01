@@ -27,6 +27,7 @@ type YouTubeThumbnail = {
 
 type YouTubeSnippet = {
   title?: string;
+  channelTitle?: string;
   description?: string;
   thumbnails?: {
     default?: YouTubeThumbnail;
@@ -71,6 +72,7 @@ const normalizeLikedVideos = (response: YouTubeListResponse<YouTubePlaylistItem>
       return {
         id: videoId,
         ...(item.snippet?.title ? { title: item.snippet.title } : {}),
+        ...(item.snippet?.channelTitle ? { channelTitle: item.snippet.channelTitle } : {}),
         ...(item.snippet?.description ? { description: item.snippet.description } : {}),
         thumbnail: getThumbnailUrl(item.snippet),
         link: `https://www.youtube.com/watch?v=${videoId}`,
@@ -89,6 +91,7 @@ const normalizeSearchVideos = (response: YouTubeListResponse<YouTubeSearchItem>)
       return {
         id: videoId,
         ...(item.snippet?.title ? { title: item.snippet.title } : {}),
+        ...(item.snippet?.channelTitle ? { channelTitle: item.snippet.channelTitle } : {}),
         ...(item.snippet?.description ? { description: item.snippet.description } : {}),
         thumbnail: getThumbnailUrl(item.snippet),
         link: `https://www.youtube.com/watch?v=${videoId}`,
@@ -214,6 +217,7 @@ export const saveRecommendations = async (
         videoLink: rec.videoLink,
         thumbnail: rec.thumbnail,
         title: rec.title ?? null,
+        channelTitle: rec.channelTitle ?? null,
         category: rec.category,
     })),
   });
