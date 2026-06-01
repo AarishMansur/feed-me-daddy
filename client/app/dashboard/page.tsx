@@ -81,14 +81,7 @@ export default function Dashboard() {
     await refetchRecommendations();
   };
 
-  const handleSurpriseMe = () => {
-    if (recommendations.length > 0) {
-      const random = recommendations[Math.floor(Math.random() * recommendations.length)];
-      if (random?.videoId) {
-        window.open(`https://www.youtube.com/watch?v=${random.videoId}`, "_blank");
-      }
-    }
-  };
+
 
   const userName = session?.user?.name?.split(" ")[0] || "there";
 
@@ -160,7 +153,7 @@ export default function Dashboard() {
           )}
 
           <button
-            onClick={handleSurpriseMe}
+            onClick={handleRefresh}
             style={{
               display: "flex",
               alignItems: "center",
