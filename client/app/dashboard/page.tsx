@@ -228,19 +228,7 @@ export default function Dashboard() {
             </svg>
           }
         />
-        <StatCard
-          label="Watch Later"
-          value={56}
-          trend="7 this month"
-          trendUp
-          iconBg="#FFF7EC"
-          icon={
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-          }
-        />
+
         <StatCard
           label="Hours Saved"
           value="18.4"
@@ -493,7 +481,7 @@ export default function Dashboard() {
                 onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "#111")}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "#606060")}
               >
-                View all
+                Refresh
               </button>
             </div>
 
@@ -506,7 +494,7 @@ export default function Dashboard() {
                   text="Hit 'Surprise Me' to generate your first AI-curated recommendations."
                 />
               ) : (
-                recommendations.slice(0, 4).map((rec) => (
+                recommendations.slice(0, 4).map((rec: any) => (
                   <RecommendedVideoItem
                     key={rec.id}
                     thumbnail={rec.thumbnail}

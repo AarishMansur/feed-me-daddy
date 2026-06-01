@@ -17,8 +17,6 @@ const navItems = [
   { id: "dashboard", label: "Dashboard", icon: HomeIcon },
   { id: "subscriptions", label: "Subscriptions", icon: SubscriptionsIcon },
   { id: "liked", label: "Liked Videos", icon: HeartIcon },
-  { id: "watch-later", label: "Watch Later", icon: ClockIcon },
-  { id: "history", label: "History", icon: HistoryIcon },
   { id: "recommendations", label: "Recommendations", icon: SparklesIcon },
 ];
 
