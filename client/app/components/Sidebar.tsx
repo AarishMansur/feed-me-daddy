@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { authClient } from "../lib/auth-client";
 
@@ -20,9 +21,39 @@ const navItems = [
   { id: "recommendations", label: "Recommendations", icon: SparklesIcon },
 ];
 
-export default function Sidebar({ user, activeSection = "dashboard", onNavigate }: SidebarProps) {
+const navContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const navItemVariants = {
+  hidden: {
+    opacity: 0,
+    x: -16,
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.25,
+    },
+  },
+};
+
+export default function Sidebar({
+  user,
+  activeSection = "dashboard",
+  onNavigate,
+}: SidebarProps) {
+  const [open, setOpen] = useState(true);
+
   const handleNavClick = (id: string) => {
     onNavigate?.(id);
+
     if (id === "dashboard") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
@@ -37,180 +68,243 @@ export default function Sidebar({ user, activeSection = "dashboard", onNavigate 
   };
 
   return (
-    <aside
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        height: "100vh",
-        width: "220px",
-        backgroundColor: "#ffffff",
-        borderRight: "1px solid #F0F0F0",
-        display: "flex",
-        flexDirection: "column",
-        zIndex: 50,
-        fontFamily: "var(--font-inter), Inter, sans-serif",
-      }}
-    >
-      <div
+    <>
+      <button
+        onClick={() => setOpen((prev) => !prev)}
         style={{
+          position: "fixed",
+          top: "16px",
+          left: open ? "236px" : "16px",
+          zIndex: 100,
+          width: "40px",
+          height: "40px",
+          borderRadius: "10px",
+          border: "1px solid #E8E8E8",
+          backgroundColor: "#ffffff",
+          cursor: "pointer",
+          transition: "left 0.25s ease",
           display: "flex",
           alignItems: "center",
-          gap: "10px",
-          padding: "20px 18px 16px",
+          justifyContent: "center",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
         }}
       >
-        <div
-          style={{
-            width: "34px",
-            height: "34px",
-            backgroundColor: "#FF0000",
-            borderRadius: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#111"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <svg width="17" height="13" viewBox="0 0 17 13" fill="none">
-            <path
-              d="M16.5 2.07C16.3.85 15.35.05 14.12.03 12.07 0 8.5 0 8.5 0S4.93 0 2.88.03C1.65.05.7.85.5 2.07 0 3.62 0 6.5 0 6.5s0 2.88.5 4.43c.2 1.22 1.15 2.02 2.38 2.04C4.93 13 8.5 13 8.5 13s3.57 0 5.62-.03c1.23-.02 2.18-.82 2.38-2.04C17 9.38 17 6.5 17 6.5s0-2.88-.5-4.43zM6.8 9.25V3.75L11.73 6.5 6.8 9.25z"
-              fill="white"
-            />
-          </svg>
-        </div>
-        <span
-          style={{
-            fontWeight: 700,
-            fontSize: "14.5px",
-            color: "#111111",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          FeedmeDaddy
-        </span>
-      </div>
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
 
-      <nav
-        style={{
-          flex: 1,
-          padding: "4px 10px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "2px",
-          overflowY: "auto",
-        }}
-      >
-        {navItems.map((item) => {
-          const isActive = activeSection === item.id;
-          const Icon = item.icon;
-          return (
-            <NavButton
-              key={item.id}
-              label={item.label}
-              icon={<Icon />}
-              isActive={isActive}
-              onClick={() => handleNavClick(item.id)}
-            />
-          );
-        })}
-      </nav>
-
-      <div
-        style={{
-          padding: "12px 14px 14px",
-          borderTop: "1px solid #F0F0F0",
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-        }}
-      >
-        {user.image ? (
-          <img
-            src={user.image}
-            alt={user.name || "User"}
+      <AnimatePresence>
+        {open && (
+          <motion.aside
+            initial={{ x: -240 }}
+            animate={{ x: 0 }}
+            exit={{ x: -240 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              flexShrink: 0,
-            }}
-            referrerPolicy="no-referrer"
-          />
-        ) : (
-          <div
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              backgroundColor: "#FFF0F0",
+              position: "fixed",
+              top: 0,
+              left: 0,
+              height: "100vh",
+              width: "220px",
+              backgroundColor: "#ffffff",
+              borderRight: "1px solid #F0F0F0",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#FF0000",
-              fontWeight: 700,
-              fontSize: "14px",
-              flexShrink: 0,
+              flexDirection: "column",
+              zIndex: 50,
+              fontFamily: "var(--font-inter), Inter, sans-serif",
             }}
           >
-            {(user.name?.[0] || user.email[0] || "U").toUpperCase()}
-          </div>
-        )}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p
-            style={{
-              fontSize: "13px",
-              fontWeight: 600,
-              color: "#111111",
-              margin: 0,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              lineHeight: 1.3,
-            }}
-          >
-            {user.name || "User"}
-          </p>
-          <p
-            style={{
-              fontSize: "11px",
-              color: "#909090",
-              margin: 0,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              lineHeight: 1.4,
-            }}
-          >
-            {user.email}
-          </p>
-        </div>
-      </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "20px 18px 16px",
+              }}
+            >
+              <div
+                style={{
+                  width: "34px",
+                  height: "34px",
+                  backgroundColor: "#FF0000",
+                  borderRadius: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <svg width="17" height="13" viewBox="0 0 17 13" fill="none">
+                  <path
+                    d="M16.5 2.07C16.3.85 15.35.05 14.12.03 12.07 0 8.5 0 8.5 0S4.93 0 2.88.03C1.65.05.7.85.5 2.07 0 3.62 0 6.5 0 6.5s0 2.88.5 4.43c.2 1.22 1.15 2.02 2.38 2.04C4.93 13 8.5 13 8.5 13s3.57 0 5.62-.03c1.23-.02 2.18-.82 2.38-2.04C17 9.38 17 6.5 17 6.5s0-2.88-.5-4.43zM6.8 9.25V3.75L11.73 6.5 6.8 9.25z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
 
-      <div style={{ padding: "0 14px 14px" }}>
-        <button
-          onClick={handleSignOut}
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: "#FFF0F0",
-            color: "#FF0000",
-            border: "none",
-            borderRadius: "8px",
-            fontSize: "13px",
-            fontWeight: 600,
-            cursor: "pointer",
-            fontFamily: "inherit",
-            transition: "background-color 0.15s ease",
-          }}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "#FFE0E0")}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = "#FFF0F0")}
-        >
-          Log Out
-        </button>
-      </div>
-    </aside>
+              <span
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14.5px",
+                  color: "#111111",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                FeedmeDaddy
+              </span>
+            </div>
+
+            <motion.nav
+              variants={navContainerVariants}
+              initial="hidden"
+              animate="visible"
+              style={{
+                flex: 1,
+                padding: "4px 10px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "2px",
+                overflowY: "auto",
+              }}
+            >
+              {navItems.map((item) => {
+                const isActive = activeSection === item.id;
+                const Icon = item.icon;
+
+                return (
+                  <motion.div
+                    key={item.id}
+                    variants={navItemVariants}
+                  >
+                    <NavButton
+                      label={item.label}
+                      icon={<Icon />}
+                      isActive={isActive}
+                      onClick={() => handleNavClick(item.id)}
+                    />
+                  </motion.div>
+                );
+              })}
+            </motion.nav>
+
+            <div
+              style={{
+                padding: "12px 14px 14px",
+                borderTop: "1px solid #F0F0F0",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              {user.image ? (
+                <img
+                  src={user.image}
+                  alt={user.name || "User"}
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    flexShrink: 0,
+                  }}
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    backgroundColor: "#FFF0F0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#FF0000",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    flexShrink: 0,
+                  }}
+                >
+                  {(user.name?.[0] || user.email[0] || "U").toUpperCase()}
+                </div>
+              )}
+
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    color: "#111111",
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {user.name || "User"}
+                </p>
+
+                <p
+                  style={{
+                    fontSize: "11px",
+                    color: "#909090",
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {user.email}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ padding: "0 14px 14px" }}>
+              <button
+                onClick={handleSignOut}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  backgroundColor: "#FFF0F0",
+                  color: "#FF0000",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  transition: "background-color 0.15s ease",
+                }}
+                onMouseEnter={(e) =>
+                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                  "#FFE0E0")
+                }
+                onMouseLeave={(e) =>
+                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                  "#FFF0F0")
+                }
+              >
+                Log Out
+              </button>
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -265,6 +359,7 @@ function NavButton({
       >
         {icon}
       </span>
+
       {label}
     </button>
   );
@@ -278,6 +373,7 @@ function HomeIcon() {
     </svg>
   );
 }
+
 function SubscriptionsIcon() {
   return (
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -286,6 +382,7 @@ function SubscriptionsIcon() {
     </svg>
   );
 }
+
 function HeartIcon() {
   return (
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -293,32 +390,7 @@ function HeartIcon() {
     </svg>
   );
 }
-function ClockIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  );
-}
-function HistoryIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-      <path d="M3 3v5h5" />
-      <path d="M12 7v5l4 2" />
-    </svg>
-  );
-}
-function AnalyticsIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" x2="18" y1="20" y2="10" />
-      <line x1="12" x2="12" y1="20" y2="4" />
-      <line x1="6" x2="6" y1="20" y2="14" />
-    </svg>
-  );
-}
+
 function SparklesIcon() {
   return (
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
