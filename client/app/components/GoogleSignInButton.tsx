@@ -23,38 +23,19 @@ export default function GoogleSignInButton({
   return (
     <button
       onClick={handleSignIn}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: isLarge ? "12px" : "10px",
-        padding: isLarge ? "16px 36px" : "12px 28px",
-        background: "var(--bg-surface)",
-        color: "var(--text-primary)",
-        fontFamily: "var(--font-body)",
-        fontWeight: 600,
-        fontSize: isLarge ? "1rem" : "0.875rem",
-        border: "1px solid var(--border-light)",
-        borderRadius: "var(--radius-full)",
-        cursor: "pointer",
-        transition: "all var(--transition-base)",
-        boxShadow: "var(--shadow-card)",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = "var(--bg-elevated)";
-        e.currentTarget.style.borderColor = "var(--border-accent)";
-        e.currentTarget.style.boxShadow = "var(--glow-red)";
-        e.currentTarget.style.transform = "translateY(-2px)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = "var(--bg-surface)";
-        e.currentTarget.style.borderColor = "var(--border-light)";
-        e.currentTarget.style.boxShadow = "var(--shadow-card)";
-        e.currentTarget.style.transform = "translateY(0)";
-      }}
+      className={`group inline-flex items-center justify-center gap-3 border border-black/10 bg-white font-medium text-black transition-all duration-300 hover:border-black/20 ${
+        isLarge
+          ? "rounded-2xl px-8 py-4 text-base"
+          : "rounded-xl px-6 py-3 text-sm"
+      }`}
     >
       <GoogleIcon size={isLarge ? 22 : 18} />
-      Continue with Google
+
+      <span>Continue with Google</span>
+
+      <span className="translate-x-[-6px] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+        →
+      </span>
     </button>
   );
 }

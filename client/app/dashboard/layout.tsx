@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { authClient } from "../lib/auth-client";
-import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
 export default function DashboardLayout({
   children,
@@ -12,6 +12,7 @@ export default function DashboardLayout({
 }) {
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
+  const [activeSection, setActiveSection] = useState("dashboard");
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -27,7 +28,8 @@ export default function DashboardLayout({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "var(--bg-deepest)",
+          backgroundColor: "#F8F8F6",
+          fontFamily: "var(--font-inter), Inter, sans-serif",
         }}
       >
         <div
@@ -38,22 +40,19 @@ export default function DashboardLayout({
             gap: "16px",
           }}
         >
+          {/* Spinner */}
           <div
             style={{
               width: "40px",
               height: "40px",
-              border: "3px solid var(--bg-elevated)",
-              borderTopColor: "var(--accent-primary)",
+              border: "3px solid #EBEBEB",
+              borderTopColor: "#FF0000",
               borderRadius: "50%",
-              animation: "spin-slow 0.8s linear infinite",
+              animation: "spin 0.8s linear infinite",
             }}
           />
-          <span
-            style={{
-              fontSize: "0.875rem",
-              color: "var(--text-muted)",
-            }}
-          >
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <span style={{ fontSize: "14px", color: "#909090" }}>
             Loading your feed...
           </span>
         </div>
@@ -61,24 +60,36 @@ export default function DashboardLayout({
     );
   }
 
-  if (!session) {
-    return null;
-  }
+  if (!session) return null;
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar user={session.user} />
-      <main
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#F8F8F6",
+        fontFamily: "var(--font-inter), Inter, sans-serif",
+      }}
+    >
+      {/* Sidebar */}
+      <Sidebar
+        user={session.user}
+        activeSection={activeSection}
+        onNavigate={setActiveSection}
+      />
+
+      {/* Main scrollable content */}
+      <div
         style={{
+          marginLeft: "220px",
           flex: 1,
-          maxWidth: "1280px",
-          width: "100%",
-          margin: "0 auto",
-          padding: "32px 24px 64px",
+          minHeight: "100vh",
+          overflowY: "auto",
+          backgroundColor: "#F8F8F6",
         }}
       >
         {children}
-      </main>
+      </div>
     </div>
   );
 }
