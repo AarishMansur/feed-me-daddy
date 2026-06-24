@@ -6,6 +6,7 @@ interface ContinueWatchingCardProps {
   progress?: number; // 0–100
   videoId?: string;
   index?: number;
+  fullWidth?: boolean;
 }
 
 const PROGRESS_COLORS = ["#FF0000", "#FF6B35", "#7C4DFF", "#22C55E"];
@@ -18,6 +19,7 @@ export default function ContinueWatchingCard({
   progress = 0,
   videoId,
   index = 0,
+  fullWidth = false,
 }: ContinueWatchingCardProps) {
   const handleClick = () => {
     if (videoId) {
@@ -31,7 +33,7 @@ export default function ContinueWatchingCard({
     <div
       onClick={handleClick}
       style={{
-        width: "200px",
+        width: fullWidth ? "100%" : "200px",
         minWidth: "160px",
         flexShrink: 0,
         cursor: videoId ? "pointer" : "default",

@@ -416,14 +416,16 @@ export default function Dashboard() {
             </div>
 
             {likedLoading ? (
-              <SkeletonCards count={4} />
+              <SkeletonCards count={4} isMobile={isMobile} />
             ) : likedVideos.length === 0 ? (
               <EmptyMsg icon="▶️" text="Like some videos on YouTube to see them here." />
             ) : (
               <div
-                className="scroll-row"
+                className={isMobile ? "scroll-row" : ""}
                 style={{
-                  flexWrap: "nowrap",
+                  display: isMobile ? "flex" : "grid",
+                  gap: "16px",
+                  gridTemplateColumns: isMobile ? undefined : "repeat(auto-fit, minmax(200px, 1fr))",
                 }}
               >
                 {likedVideos.slice(0, 4).map((video, i) => (
@@ -436,6 +438,7 @@ export default function Dashboard() {
                     progress={MOCK_PROGRESS[i % MOCK_PROGRESS.length]}
                     videoId={video.videoId}
                     index={i}
+                    fullWidth={!isMobile}
                   />
                 ))}
               </div>
@@ -558,14 +561,21 @@ function SkeletonRows({ count }: { count: number }) {
   );
 }
 
-function SkeletonCards({ count }: { count: number }) {
+function SkeletonCards({ count, isMobile }: { count: number; isMobile?: boolean }) {
   return (
-    <div className="scroll-row" style={{ flexWrap: "nowrap" }}>
+    <div
+      className={isMobile ? "scroll-row" : ""}
+      style={{
+        display: isMobile ? "flex" : "grid",
+        gap: "16px",
+        gridTemplateColumns: isMobile ? undefined : "repeat(auto-fit, minmax(200px, 1fr))",
+      }}
+    >
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} style={{ width: "200px", flexShrink: 0 }}>
-          <div style={shimmer(200, 110, 10)} />
-          <div style={{ ...shimmer(160, 13, 4), marginTop: "10px" }} />
-          <div style={{ ...shimmer(100, 11, 4), marginTop: "6px" }} />
+        <div key={i} style={{ width: isMobile ? "200px" : "100%", flexShrink: 0 }}>
+          <div style={shimmer("100%", 110, 10)} />
+          <div style={{ ...shimmer("80%", 13, 4), marginTop: "10px" }} />
+          <div style={{ ...shimmer("50%", 11, 4), marginTop: "6px" }} />
         </div>
       ))}
     </div>
