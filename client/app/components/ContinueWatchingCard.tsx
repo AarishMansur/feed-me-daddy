@@ -32,6 +32,7 @@ export default function ContinueWatchingCard({
       onClick={handleClick}
       style={{
         width: "200px",
+        minWidth: "160px",
         flexShrink: 0,
         cursor: videoId ? "pointer" : "default",
         transition: "transform 0.15s ease",
@@ -58,7 +59,7 @@ export default function ContinueWatchingCard({
           <img
             src={thumbnail}
             alt={title}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", maxWidth: "none", display: "block" }}
             referrerPolicy="no-referrer"
           />
         ) : (

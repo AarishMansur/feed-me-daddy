@@ -26,9 +26,9 @@ export default function Page() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="max-w-4xl text-5xl font-medium leading-[1.02] tracking-[-0.05em] text-black md:text-7xl"
+              className="max-w-4xl text-4xl font-medium leading-[1.02] tracking-[-0.04em] text-black sm:text-5xl md:text-7xl"
             >
-              <span className="inline-flex items-center justify-center">
+              <span className="inline-flex flex-wrap items-center justify-center gap-x-2">
                 Break your
 
                 <motion.span

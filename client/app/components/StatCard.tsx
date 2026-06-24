@@ -29,7 +29,7 @@ export default function StatCard({
         border: "1px solid #F0F0F0",
         boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
         flex: 1,
-        minWidth: 0,
+        minWidth: "150px",
       }}
     >
       <div

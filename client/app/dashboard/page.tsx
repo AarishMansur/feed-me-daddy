@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { authClient } from "../lib/auth-client";
 import {
   useRecommendations,
@@ -13,6 +13,18 @@ import SuggestedFeedRow from "../components/SuggestedFeedRow";
 import TopInterestsChart from "../components/TopInterestsChart";
 import RecommendedVideoItem from "../components/RecommendedVideoItem";
 import ContinueWatchingCard from "../components/ContinueWatchingCard";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+}
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -46,6 +58,7 @@ const MOCK_DURATIONS = ["18:24", "11:56", "13:42", "22:15"];
 
 export default function Dashboard() {
   const { data: session } = authClient.useSession();
+  const isMobile = useIsMobile();
 
   const {
     data: recommendationsData,
@@ -82,15 +95,16 @@ export default function Dashboard() {
   const userName = session?.user?.name?.split(" ")[0] || "there";
 
   return (
-    <div style={{ padding: "20px 32px 32px", width: "100%", margin: "0 auto" }}>
+    <div style={{ padding: isMobile ? "72px 16px 24px 64px" : "20px 32px 32px", width: "100%", margin: "0 auto" }}>
 
       <div
         style={{
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: isMobile ? "stretch" : "flex-start",
+          flexDirection: isMobile ? "column" : "row",
           justifyContent: "center",
           marginBottom: "16px",
-          gap: "16px",
+          gap: "12px",
         }}
       >
         <div>
@@ -118,7 +132,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0, flexWrap: "wrap" }}>
           <button
             style={iconBtnStyle}
             title="Notifications"
@@ -135,7 +149,7 @@ export default function Dashboard() {
             <img
               src={session.user.image}
               alt={session.user.name || "User"}
-              style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover", border: "2px solid #F0F0F0" }}
+              style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover", border: "2px solid #F0F0F0", maxWidth: "none", flexShrink: 0 }}
               referrerPolicy="no-referrer"
             />
           ) : (
@@ -186,15 +200,16 @@ export default function Dashboard() {
       </div>
 
       <div
+        className={isMobile ? "scroll-row" : ""}
         style={{
           display: "flex",
           gap: "16px",
           marginBottom: "16px",
-          flexWrap: "wrap",
+          flexWrap: isMobile ? "nowrap" : "wrap",
         }}
       >
         <StatCard
-          label="Subscriptions"
+          label="Subscription"
           value={subscriptionsLoading ? "—" : subscriptions.length}
           trend={subscriptions.length > 0 ? `${Math.min(4, subscriptions.length)} this month` : undefined}
           trendUp
@@ -237,7 +252,7 @@ export default function Dashboard() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 340px",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 340px",
           gap: "16px",
           alignItems: "start",
         }}
@@ -406,12 +421,9 @@ export default function Dashboard() {
               <EmptyMsg icon="▶️" text="Like some videos on YouTube to see them here." />
             ) : (
               <div
+                className="scroll-row"
                 style={{
-                  display: "flex",
-                  gap: "16px",
-                  overflowX: "auto",
-                  paddingBottom: "8px",
-                  scrollbarWidth: "none",
+                  flexWrap: "nowrap",
                 }}
               >
                 {likedVideos.slice(0, 4).map((video, i) => (
@@ -548,7 +560,7 @@ function SkeletonRows({ count }: { count: number }) {
 
 function SkeletonCards({ count }: { count: number }) {
   return (
-    <div style={{ display: "flex", gap: "16px" }}>
+    <div className="scroll-row" style={{ flexWrap: "nowrap" }}>
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} style={{ width: "200px", flexShrink: 0 }}>
           <div style={shimmer(200, 110, 10)} />

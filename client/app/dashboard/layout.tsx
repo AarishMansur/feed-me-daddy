@@ -5,6 +5,20 @@ import { useEffect, useState } from "react";
 import { authClient } from "../lib/auth-client";
 import Sidebar from "../components/Sidebar";
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  return isMobile;
+}
+
 export default function DashboardLayout({
   children,
 }: {
@@ -13,6 +27,7 @@ export default function DashboardLayout({
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("dashboard");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -78,14 +93,16 @@ export default function DashboardLayout({
         onNavigate={setActiveSection}
       />
 
-      {/* Main scrollable content */}
+      {/* Main scrollable content — no left margin on mobile (sidebar overlays) */}
       <div
         style={{
-          marginLeft: "220px",
+          marginLeft: isMobile ? "0px" : "220px",
           flex: 1,
           minHeight: "100vh",
           overflowY: "auto",
           backgroundColor: "#F8F8F6",
+          transition: "margin-left 0.3s ease",
+          minWidth: 0,
         }}
       >
         {children}

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authClient } from "../lib/auth-client";
 
 interface SidebarProps {
@@ -44,12 +44,33 @@ const navItemVariants = {
   },
 };
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  return isMobile;
+}
+
 export default function Sidebar({
   user,
   activeSection = "dashboard",
   onNavigate,
 }: SidebarProps) {
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(true);
+
+  // Auto-close sidebar on mobile when screen shrinks
+  useEffect(() => {
+    if (isMobile) setOpen(false);
+    else setOpen(true);
+  }, [isMobile]);
 
   const handleNavClick = (id: string) => {
     onNavigate?.(id);
@@ -60,6 +81,9 @@ export default function Sidebar({
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+
+    // Close sidebar on mobile after navigation
+    if (isMobile) setOpen(false);
   };
 
   const handleSignOut = async () => {
@@ -69,13 +93,14 @@ export default function Sidebar({
 
   return (
     <>
+      {/* Toggle Button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
         style={{
           position: "fixed",
           top: "16px",
-          left: open ? "236px" : "16px",
-          zIndex: 100,
+          left: open && !isMobile ? "236px" : "16px",
+          zIndex: 200,
           width: "40px",
           height: "40px",
           borderRadius: "10px",
@@ -105,6 +130,27 @@ export default function Sidebar({
         </svg>
       </button>
 
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {open && isMobile && (
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setOpen(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              backgroundColor: "rgba(0,0,0,0.35)",
+              zIndex: 99,
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar Panel */}
       <AnimatePresence>
         {open && (
           <motion.aside
@@ -122,7 +168,7 @@ export default function Sidebar({
               borderRight: "1px solid #F0F0F0",
               display: "flex",
               flexDirection: "column",
-              zIndex: 50,
+              zIndex: 100,
               fontFamily: "var(--font-inter), Inter, sans-serif",
             }}
           >
