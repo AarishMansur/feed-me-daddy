@@ -12,11 +12,11 @@ export type Video = {
 type InterestProfile = Record<string, number>;
 
 export type Recommendation = {
-    videoID:string
-    videoLink:string
-    thumbnail:string
+    videoID:string 
+    videoLink:string 
+    thumbnail:string 
     title: string | undefined
-    channelTitle?: string
+    channelTitle?: string | undefined
     category:string
     score:number
     matchedKeywords:string[];
@@ -56,7 +56,7 @@ export const generateRecommendations = (videos:Video[],likedVideosID:Set<string>
     const scored = candidates.map(video=>({video,...scoreVideo(video,interestProfile),}))
    scored.sort((a,b)=>b.score-a.score);
 
-    const reccomendations: Recommendation[] = scored.slice(0, maxResults).map(item => ({
+    const reccomendations: Recommendation[]  = scored.slice(0, maxResults).map(item => ({
     videoID: item.video.id || "",
     videoLink: item.video.link || "",
     thumbnail: item.video.thumbnail || "",
