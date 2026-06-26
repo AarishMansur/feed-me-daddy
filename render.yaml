@@ -3,6 +3,7 @@ services:
     name: feed-me-daddy-server
     env: node
     plan: free
+    rootDir: server
     buildCommand: pnpm install && pnpm run build
     startCommand: pnpm start
     envVars:
